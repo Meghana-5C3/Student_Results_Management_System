@@ -1,0 +1,81 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0"><i class="fas fa-edit"></i> Edit Subject Combination</h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for m in messages %}
+                    <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show">
+                        {{ m }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Select Class <span class="text-danger">*</span></label>
+                        <select class="form-select" name="student_class" required>
+                            {% for c in classes %}
+                                <option value="{{ c.id }}" {% if combo.student_class.id == c.id %}selected{% endif %}>
+                                    {{ c.class_name }} ({{ c.department }} - Year {{ c.year }} Sec {{ c.section }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Select Department</label>
+                        <select class="form-select" id="department_filter">
+                            <option value="all">All Departments</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept }}">{{ dept }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Select Subjects <span class="text-danger">*</span></label>
+                        <select class="form-select" name="subjects" multiple size="10" id="subjects" required>
+                            {% for s in subjects %}
+                                <option class="dept-{{ s.assigned_class.department }}" value="{{ s.id }}"
+                                    {% if s in combo.subject.all %}selected{% endif %}>
+                                    {{ s.subject_code }} - {{ s.subject_name }} ({{ s.assigned_class.class_name }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">Ctrl/Cmd to select multiple. Filter above.</small>
+                    </div>
+                    <div class="col-12 text-end mt-3">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i> Update Combination
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+const deptFilter = document.getElementById('department_filter');
+const options = document.querySelectorAll('#subjects option');
+
+deptFilter.addEventListener('change', () => {
+    const selectedDept = deptFilter.value;
+    options.forEach(opt => {
+        if(selectedDept === 'all' || opt.classList.contains('dept-' + selectedDept)){
+            opt.style.display = '';
+        } else {
+            opt.style.display = 'none';
+        }
+    });
+});
+</script>
+
+{% endblock %}

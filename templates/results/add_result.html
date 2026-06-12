@@ -1,0 +1,117 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow rounded-3">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Result</h5>
+    </div>
+
+    <div class="card-body">
+      <!-- Django Messages -->
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Filter form (optional, can stay as GET) -->
+      <form method="get" class="mb-3">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Department</label>
+            <select name="department" class="form-select" onchange="this.form.submit()">
+              <option value="">-- Select Department --</option>
+              {% for dept in departments %}
+                <option value="{{ dept }}" {% if dept == selected_department %}selected{% endif %}>{{ dept }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Class</label>
+            <select name="class" class="form-select" onchange="this.form.submit()">
+              <option value="">-- Select Class --</option>
+              {% for c in classes %}
+                <option value="{{ c.id }}" {% if c.id|stringformat:"s" == selected_class_id %}selected{% endif %}>
+                  {{ c.class_name }} ({{ c.department }} - {{ c.section }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <!-- POST form for adding result -->
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Semester</label>
+            <select name="semester" class="form-select" required>
+              <option value="">-- Select Semester --</option>
+              <option value="1">I Semester</option>
+              <option value="2">II Semester</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Student</label>
+            <select name="student" class="form-select" required>
+              <option value="">-- Select Student --</option>
+              {% for s in students %}
+                <option value="{{ s.id }}">{{ s.roll_number }} - {{ s.full_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Subject</label>
+            <select name="subject" class="form-select" required>
+              <option value="">-- Select Subject --</option>
+              {% for sub in subject %}
+                <option value="{{ sub.id }}">{{ sub.subject_code }} - {{ sub.subject_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Subject Combination</label>
+            <select name="combination" class="form-select" required>
+              <option value="">-- Select Combination --</option>
+              {% for combo in combinations %}
+                <option value="{{ combo.id }}">{{ combo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Internal Marks</label>
+            <input type="number" name="internal_marks" class="form-control" min="0" max="50" step="0.01" required>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">External Marks</label>
+            <input type="number" name="external_marks" class="form-control" min="0" max="100" step="0.01" required>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label fw-bold">Remarks</label>
+            <textarea name="remarks" class="form-control" rows="3" placeholder="Optional"></textarea>
+          </div>
+        </div>
+
+        <div class="text-end mt-3">
+          <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Save Result</button>
+          <a href="{% url 'manage_results' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i> Back</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

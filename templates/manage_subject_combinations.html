@@ -1,0 +1,90 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Manage Subject Combinations</h3>
+        <a href="{% url 'add_subject_combination' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Add Combination
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <i class="fas fa-layer-group"></i> Combinations List
+        </div>
+        <div class="card-body">
+            <div class="mb-3 row">
+                <div class="col-md-4">
+                    <label>Filter by Department:</label>
+                    <select class="form-select" id="dept_filter">
+                        <option value="all">All</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept }}">{{ dept }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Class</th>
+                            <th>Department</th>
+                            <th>Subjects</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="combo_table">
+                        {% for c in combinations %}
+                        <tr class="dept-{{ c.student_class.department }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ c.student_class.class_name }} (Year {{ c.student_class.year }} Sec {{ c.student_class.section }})</td>
+                            <td>{{ c.student_class.department }}</td>
+                            <td>
+                                {% for s in c.subjects.all %}
+                  <span class="badge rounded-pill px-3 py-2 me-1 mb-1" 
+      style="background-color:#e3f2fd; color:#1565c0; font-weight:500; font-size:0.85rem;">
+    {{ s.subject_name }}
+</span>
+    
+
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{% url 'edit_subject_combination' c.id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete_subject_combination' c.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const deptFilter = document.getElementById('dept_filter');
+const rows = document.querySelectorAll('#combo_table tr');
+
+deptFilter.addEventListener('change', () => {
+    const selected = deptFilter.value;
+    rows.forEach(row => {
+        if(selected === 'all' || row.classList.contains('dept-' + selected)){
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+
+{% endblock %}

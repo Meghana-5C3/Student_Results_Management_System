@@ -1,0 +1,58 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="fas fa-edit"></i> Edit Result</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label>Student</label>
+                <select name="student" class="form-select" required>
+                    {% for s in students %}
+                        <option value="{{ s.id }}" {% if s.id == result.student.id %}selected{% endif %}>{{ s.full_name }} ({{ s.roll_number }})</option>
+                    {% endfor %}
+                </select>
+                <select name="semester" class="form-select" required>
+  <option value="1" {% if result.semester == 1 %}selected{% endif %}>I Semester</option>
+  <option value="2" {% if result.semester == 2 %}selected{% endif %}>II Semester</option>
+</select>
+
+            </div>
+            <div class="col-md-4">
+                <label>Subject</label>
+                <select name="subject" class="form-select" required>
+                    {% for sub in subject %}
+                        <option value="{{ sub.id }}" {% if sub.id == result.subject.id %}selected{% endif %}>{{ sub.subject_name }} ({{ sub.subject_code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Subject Combination</label>
+                <select name="combination" class="form-select" required>
+                    {% for c in combinations %}
+                        <option value="{{ c.id }}" {% if c.id == result.subject_combination.id %}selected{% endif %}>{{ c.student_class }} - {{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label>Internal Marks</label>
+                <input type="number" name="internal_marks" class="form-control" min="0" max="100" step="0.01" value="{{ result.internal_marks }}">
+            </div>
+            <div class="col-md-4">
+                <label>External Marks</label>
+                <input type="number" name="external_marks" class="form-control" min="0" max="100" step="0.01" value="{{ result.external_marks }}">
+            </div>
+            <div class="col-md-4">
+                <label>Remarks</label>
+                <input type="text" name="remarks" class="form-control" value="{{ result.remarks }}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3"><i class="fas fa-save"></i> Update Result</button>
+    </form>
+</div>
+{% endblock %}

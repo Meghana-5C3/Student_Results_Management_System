@@ -1,0 +1,99 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-4">
+    <div class="card shadow-lg rounded-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Add Student</h5>
+            <a href="{% url 'manage_students' %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-users me-1"></i> Manage Students
+            </a>
+        </div>
+
+        <div class="card-body">
+            {% if messages %}
+                {% for m in messages %}
+                    <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{m.tags}}{% endif %} alert-dismissible fade show">
+                        {{ m }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="row g-3">
+                {% csrf_token %}
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Roll Number</label>
+                    <input type="text" name="roll_number" class="form-control" placeholder="e.g., 23091A05C3" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="Enter full name" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Gender</label>
+                    <select name="gender" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Date of Birth</label>
+                    <input type="date" name="date_of_birth" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="student@example.com" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Phone</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Optional">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Address</label>
+                    <textarea name="address" class="form-control" rows="2" placeholder="Enter full address"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Class</label>
+                    <select name="student_class" class="form-select" required>
+                        <option value="">-- Select Class --</option>
+                        {% for c in classes %}
+                            <option value="{{c.id}}">
+                                {{ c.class_name }} ({{ c.department }} - Year {{ c.year }} Sec {{ c.section }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Admission Year</label>
+                    <input type="text" name="admission_year" class="form-control" value="2024-2025" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Profile Picture</label>
+                    <input type="file" name="profile_picture" class="form-control">
+                </div>
+
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="fas fa-save me-1"></i> Save Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

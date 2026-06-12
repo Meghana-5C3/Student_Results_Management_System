@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Banner Section -->
+    <div class="text-center mb-4">
+        <div class="p-5 mb-4 bg-primary text-white rounded-3 shadow">
+            <h1 class="fw-bold">Student Result Management System</h1>
+            <p class="lead">Manage and view results efficiently</p>
+        </div>
+    </div>
+
+    <!-- Notices Section -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white text-center">
+            <h4 class="mb-0">
+                <i class="bi bi-megaphone-fill text-primary"></i> Latest Notices
+            </h4>
+        </div>
+        <div class="card-body text-center">
+
+         {% if notices %}
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+        {% for notice in notices %}
+            <span class="me-5 fw-bold text-dark">
+                📢 {{ notice.title }} ({{ notice.created_at|date:"M d, Y" }})
+            </span>
+        {% endfor %}
+    </marquee>
+{% else %}
+    <p class="text-muted">No Notices available.</p>
+{% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

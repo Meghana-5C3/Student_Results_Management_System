@@ -1,0 +1,111 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                    <h4 class="mb-0">Create New Class</h4>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Messages -->
+                    {% if messages %}
+                        {% for m in messages %}  
+                        <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{m.tags}}{% endif %} alert-dismissible fade show" role="alert">
+                            {{m}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-4">
+
+                            <!-- Class Name -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Class Name / Title</label>
+                                <input type="text" name="class_name" class="form-control form-control-lg"
+                                       placeholder="e.g., CSE 2nd Year B" required>
+                            </div>
+
+                            <!-- Department -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Department</label>
+                                <select name="department" class="form-select form-select-lg" required>
+                                    <option value="">-- Select Department --</option>
+                                    <option value="CSE">Computer Science</option>
+                                    <option value="ECE">Electronics</option>
+                                    <option value="EEE">Electrical</option>
+                                    <option value="MECH">Mechanical</option>
+                                    <option value="CIVIL">Civil</option>
+                                    <option value="IT">Information Technology</option>
+                                </select>
+                            </div>
+
+                            <!-- Year -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Year</label>
+                                <select name="year" class="form-select" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="1">I Year</option>
+                                    <option value="2">II Year</option>
+                                    <option value="3">III Year</option>
+                                    <option value="4">IV Year</option>
+                                </select>
+                            </div>
+
+                            <!-- Semester -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Semester</label>
+                                <select name="semester" class="form-select" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="1">I Semester</option>
+                                    <option value="2">II Semester</option>
+                                </select>
+                            </div>
+
+                            <!-- Section -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Section</label>
+                                <input type="text" name="section" class="form-control" placeholder="e.g., A, B" required>
+                            </div>
+
+                            <!-- Academic Session -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Academic Session</label>
+                                <select name="academic_session" class="form-select" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="2024-2025">2024 - 2025</option>
+                                    <option value="2025-2026">2025 - 2026</option>
+                                    <option value="2026-2027">2026 - 2027</option>
+                                </select>
+                            </div>
+
+                            <!-- Remarks -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Remarks / Description</label>
+                                <textarea name="remarks" rows="2" class="form-control" placeholder="Optional notes about this class..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-success btn-lg px-4">
+                                <i class="fas fa-check-circle me-1"></i> Save Class
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

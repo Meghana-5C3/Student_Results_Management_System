@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h4>🎓 Check Student Result</h4>
+        </div>
+        <div class="card-body">
+            <!-- Filter Form -->
+            <form method="get" class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <select name="department" class="form-select">
+                        <option value="">-- Select Department --</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept }}" {% if dept == request.GET.department %}selected{% endif %}>{{ dept }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="year" class="form-select">
+                        <option value="">-- Select Year --</option>
+                        {% for y in years %}
+                        <option value="{{ y }}" {% if y|stringformat:"s" == request.GET.year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="semester" class="form-select">
+                        <option value="">-- Select Semester --</option>
+                        {% for val, text in semesters %}
+                        <option value="{{ val }}" {% if val|stringformat:"s" == request.GET.semester %}selected{% endif %}>{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+
+            <!-- Student Search Form -->
+            <form method="post" class="row g-2 mb-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <input type="text" name="roll_number" class="form-control" placeholder="Enter Roll Number" value="{{ student.roll_number|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="semester" class="form-select">
+                        <option value="">-- Select Semester --</option>
+                        {% for val, text in semesters %}
+                        <option value="{{ val }}" {% if val|stringformat:"s" == request.POST.semester %}selected{% endif %}>{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100">Search</button>
+                </div>
+            </form>
+
+            {% if results %}
+            <!-- Student Info -->
+            <div class="alert alert-info">
+                <p><strong>Name:</strong> {{ student.full_name }}</p>
+                <p><strong>Roll No:</strong> {{ student.roll_number }}</p>
+                <p><strong>Department:</strong> {{ student.student_class.department }}</p>
+                <p><strong>Class:</strong> {{ student.student_class.class_name }}</p>
+                <p><strong>Section:</strong> {{ student.student_class.section }}</p>
+                <p><strong>Year:</strong> {{ student.student_class.year }}</p>
+                <p><strong>Semester:</strong> {{ semester }}</p>
+            </div>
+
+            <!-- Results Table -->
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Internal</th>
+                        <th>External</th>
+                        <th>Total</th>
+                        <th>Grade</th>
+                        <th>Remarks</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in results %}
+                    {% with total=r.internal_marks|add:r.external_marks %}
+                    <tr>
+                        <td>{{ r.subject.subject_name }}</td>
+                        <td>{{ r.internal_marks }}</td>
+                        <td>{{ r.external_marks }}</td>
+                        <td><strong>{{ total }}</strong></td>
+                        <td>{{ r.grade }}</td>
+                        <td>{{ r.remarks }}</td>
+                        <td>
+                            {% if r.status == "Pass" %}
+                            <span class="text-success fw-bold">Pass</span>
+                            {% else %}
+                            <span class="text-danger fw-bold">Fail</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-secondary">
+                        <td colspan="3"><strong>Grand Total</strong></td>
+                        <td colspan="4"><strong>{{ grand_total }}</strong></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="7">
+                            <strong>Overall Result: </strong>
+                            {% if overall_status == "Pass" %}
+                            <span class="text-success fw-bold">Pass</span>
+                            {% else %}
+                            <span class="text-danger fw-bold">Fail</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            {% elif student %}
+            <p class="text-danger">⚠️ No results found for Roll No {{ student.roll_number }} in Semester {{ semester }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

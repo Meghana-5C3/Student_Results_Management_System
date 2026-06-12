@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Management System</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    
+    <!-- Font Awesome + Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fa-solid fa-building-columns me-1"></i> SRMS
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+          <ul class="navbar-nav text-uppercase">
+
+            <!-- Home -->
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                Home
+              </a>
+            </li>
+
+            <!-- Student Results -->
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'student_results' %}active{% endif %}" href="{% url 'student_results' %}">
+                Student Result
+              </a>
+            </li>
+
+            <!-- Notices Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="noticeDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-bell me-1"></i> Notices
+              </a>
+             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="noticeDropdown">
+    {% if latest_notices %}
+        {% for notice in latest_notices %}
+            <li>
+                <a class="dropdown-item" href="{% url 'notice_detail' notice.id %}">
+                    {{ notice.title|truncatechars:30 }}
+                </a>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li><span class="dropdown-item">No notices</span></li>
+    {% endif %}
+</ul>
+ 
+               
+            </li>
+
+            {% if user.is_authenticated %}
+              <!-- show links if logged in -->
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'password_change' %}">
+                  <i class="fa-solid fa-key me-1"></i> Change Password
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin_logout' %}">
+                  <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                </a>
+              </li>
+            {% else %}
+              <!-- show only if not logged in -->
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin-login' %}">
+                  <i class="fa-solid fa-user-shield me-1"></i> Admin
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'password_reset' %}">
+                  <i class="fa-solid fa-unlock-keyhole me-1"></i> Forgot Password?
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center bg-dark text-white mt-5">
+      <div class="container">
+        <p class="mb-0">&copy; Student Result Management System</p>
+      </div>
+    </footer>
+</body>
+</html>

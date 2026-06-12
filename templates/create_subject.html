@@ -1,0 +1,63 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-plus"></i> Add Subject</h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for m in messages %}
+                    <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ m }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="subject_code" class="form-label">Subject Code <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="subject_code" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="subject_name" class="form-label">Subject Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="subject_name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Subject Type <span class="text-danger">*</span></label>
+                        <select class="form-select" name="subject_type" required>
+                            <option value="THEORY">Theory</option>
+                            <option value="LAB">Lab</option>
+                            <option value="PROJECT">Project</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Credits <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="credits" min="1" max="10" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Assign Class <span class="text-danger">*</span></label>
+                        <select class="form-select" name="assigned_class" required>
+                            <option value="">-- Select Class --</option>
+                            {% for c in classes %}
+                                <option value="{{ c.id }}">{{ c.class_name }} ({{ c.department }} - Year {{ c.year }} Sec {{ c.section }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 text-end mt-3">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check-circle me-1"></i> Add Subject
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
